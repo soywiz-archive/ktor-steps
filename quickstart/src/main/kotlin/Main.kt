@@ -1,3 +1,5 @@
+import cache.InmemoryCache
+import cache.cache
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -58,17 +60,21 @@ fun Route.registerIndexRoute() {
 
 fun Route.registerDemoRoute() {
     //get("/demo") {
+    val inmemoryCache = InmemoryCache()
+
     get<DemoLocation> {
         call.respondHtml {
             head {
                 title("hello")
             }
             body {
-                ul {
-                    for (n in 0 until 10) {
-                        li {
-                            a(locations.href(if (n % 2 == 0) DemoLocation else UserLocation("user$n"))) {
-                                +"hello"
+                cache(inmemoryCache, "hello") {
+                    ul {
+                        for (n in 0 until 10) {
+                            li {
+                                a(locations.href(if (n % 2 == 0) DemoLocation else UserLocation("user$n"))) {
+                                    +"hello"
+                                }
                             }
                         }
                     }
