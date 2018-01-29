@@ -10,6 +10,7 @@ import io.ktor.locations.get
 import io.ktor.locations.location
 import io.ktor.locations.locations
 import io.ktor.response.respondText
+import io.ktor.routing.Route
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -35,38 +36,54 @@ class UserLocation(val name: String)
 fun Application.module() {
     install(Locations)
     routing {
-        static("css") {
-            files("css")
-        }
-        //get("/") {
-        get<IndexLocation> {
-            call.respondText("Hello, world!", ContentType.Text.Plain)
-        }
-        //get("/demo") {
-        get<DemoLocation> {
-            call.respondHtml {
-                head {
-                    title("hello")
-                }
-                body {
-                    ul {
-                        for (n in 0 until 10) {
-                            li {
-                                a(locations.href(if (n % 2 == 0) DemoLocation() else UserLocation("user$n"))) {
-                                    +"hello"
-                                }
+        registerCssRoute()
+        registerIndexRoute()
+        registerDemoRoute()
+        registerUserRoute()
+    }
+}
+
+fun Route.registerCssRoute() {
+    static("css") {
+        files("css")
+    }
+}
+
+fun Route.registerIndexRoute() {
+    //get("/") {
+    get<IndexLocation> {
+        call.respondText("Hello, world!", ContentType.Text.Plain)
+    }
+}
+
+fun Route.registerDemoRoute() {
+    //get("/demo") {
+    get<DemoLocation> {
+        call.respondHtml {
+            head {
+                title("hello")
+            }
+            body {
+                ul {
+                    for (n in 0 until 10) {
+                        li {
+                            a(locations.href(if (n % 2 == 0) DemoLocation() else UserLocation("user$n"))) {
+                                +"hello"
                             }
                         }
                     }
                 }
             }
         }
-        get<UserLocation> { location ->
-            call.respondHtml {
-                body {
-                    h1 {
-                        +location.name
-                    }
+    }
+}
+
+fun Route.registerUserRoute() {
+    get<UserLocation> { location ->
+        call.respondHtml {
+            body {
+                h1 {
+                    +location.name
                 }
             }
         }
