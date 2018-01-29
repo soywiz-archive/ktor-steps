@@ -1,10 +1,12 @@
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import kotlin.reflect.jvm.internal.impl.renderer.RenderingFormat
+import io.ktor.application.call
+import io.ktor.html.respondHtml
+import io.ktor.http.ContentType
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import kotlinx.html.*
 
 fun main(args: Array<String>) {
     val server = embeddedServer(Netty, 8080) {
@@ -13,7 +15,20 @@ fun main(args: Array<String>) {
                 call.respondText("Hello, world!", ContentType.Text.Plain)
             }
             get("/demo") {
-                call.respondText { "HELLO WORLD!" }
+                call.respondHtml {
+                    head {
+                        title("hello")
+                    }
+                    body {
+                        ul {
+                            for (n in 0 until 10) {
+                                li {
+                                    +"hello"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
