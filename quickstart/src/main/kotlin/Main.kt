@@ -25,13 +25,13 @@ fun main(args: Array<String>) {
 }
 
 @location("/")
-class IndexLocation()
+object IndexLocation
 
 @location("/demo")
-class DemoLocation()
+object DemoLocation
 
 @location("/user/{name}")
-class UserLocation(val name: String)
+data class UserLocation(val name: String)
 
 fun Application.module() {
     install(Locations)
@@ -67,7 +67,7 @@ fun Route.registerDemoRoute() {
                 ul {
                     for (n in 0 until 10) {
                         li {
-                            a(locations.href(if (n % 2 == 0) DemoLocation() else UserLocation("user$n"))) {
+                            a(locations.href(if (n % 2 == 0) DemoLocation else UserLocation("user$n"))) {
                                 +"hello"
                             }
                         }
